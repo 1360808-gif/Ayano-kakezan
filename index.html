@@ -70,7 +70,6 @@ body{
 }
 .bestBox .label{ font-size:13px; opacity:.85; }
 .bestBox .value{ font-size:20px; letter-spacing:.4px; }
-/* bestOff は使わない（残してもOKだけど、今後一切付けない） */
 .bestOff{ display:none; }
 
 /* ★ベスト消去ボタン */
@@ -93,8 +92,8 @@ body{
   align-items:center;
   justify-content:space-between;
   gap:10px;
-  flex-wrap:nowrap;         /* 1行固定 */
-  overflow-x:auto;          /* 狭い時は横スクロール */
+  flex-wrap:nowrap;
+  overflow-x:auto;
   -webkit-overflow-scrolling:touch;
 }
 .controlsLeft, .controlsRight{
@@ -209,7 +208,7 @@ button:active{ transform: translateY(1px); }
   flex:1;
   min-width:0;
   white-space:nowrap;
-  overflow:visible; /* 丸が欠けない */
+  overflow:visible;
 }
 .expr{
   font-size:18px;
@@ -359,7 +358,6 @@ button:active{ transform: translateY(1px); }
     <div class="leftCol">
       <div class="top">
 
-        <!-- タイトル行：右にベスト -->
         <div class="titleRow">
           <h1>かけ算（3年生）</h1>
 
@@ -427,13 +425,31 @@ function toHalfWidth(str){
     String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
   );
 }
-function rand(min,max){
-  return Math.floor(Math.random()*(max-min+1))+min;
+
+/* ===== 指定の出題リスト（これだけ出す） ===== */
+const baseQuestions = [
+  [3, 9],
+  [4, 6],
+  [4, 7],
+  [4, 8],
+  [4, 9],
+  [7, 4],
+  [7, 8],
+  [8, 4],
+  [9, 3],
+  [9, 4]
+];
+const QNUM = baseQuestions.length;   // ← 10問固定
+const LONG_PRESS_MS = 350;
+
+function shuffle(array){
+  for(let i=array.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 }
 
 let problems=[];
-const QNUM=10;
-const LONG_PRESS_MS = 350;
 
 /* ===== タイム計測 ON/OFF ===== */
 let timingEnabled = true;
@@ -531,15 +547,13 @@ function setTimingUI(){
 }
 timingToggle.addEventListener("change", setTimingUI);
 
-/* ===== かけ算：問題生成 ===== */
+/* ===== かけ算：指定リストから作る（ランダム順） ===== */
 function makeProblems(){
-  const out=[];
-  while(out.length<QNUM){
-    const a = rand(2,9);
-    const b = rand(2,9);
-    out.push({a,b,ans:a*b});
-  }
-  return out;
+  // 指定問題をコピー → シャッフル
+  const list = baseQuestions.map(([a,b])=>({a,b,ans:a*b}));
+  shuffle(list);
+  // 10問固定（baseQuestions の数）
+  return list.slice(0, QNUM);
 }
 
 /* ===== 描画 ===== */
@@ -599,8 +613,8 @@ function render(){
     function showAnswer(){
       if(holding) return;
       holding = true;
-
       savedA = aInput.value;
+
       aInput.value = String(p.ans);
       aInput.readOnly = true;
       aBox.classList.add("revealing");
@@ -674,7 +688,6 @@ function check(){
     }
   });
   document.getElementById("score").textContent=`点数：${score} / 100`;
-
   maybeStopTimerIfAllCorrect();
 }
 
@@ -760,17 +773,17 @@ clearBtn.addEventListener("click", ()=>{
 
 /* ===== 初期化 ===== */
 document.getElementById("makeBtn").onclick=()=>{
-  problems=makeProblems();
+  problems=makeProblems();  // ← 指定問題だけ（毎回シャッフル）
   render();
   timerReset();
-  timerStart(); // 問題作成で自動スタート（ONのときだけ）
+  timerStart();
 };
 document.getElementById("checkBtn").onclick=check;
 
 problems=makeProblems();
 render();
-showBest();     // ベストは常に表示
-setTimingUI();  // タイム表示だけON/OFF
+showBest();
+setTimingUI();
 
 setPenStyle();
 resizeCanvas();
