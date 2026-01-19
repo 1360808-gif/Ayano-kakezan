@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>かけ算れんしゅう（3年生）</title>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;
+  background:#f7f8ff;
+  color:#1f2937;
+}
+.wrap{
+  max-width:800px;
+  margin:24px auto;
+  padding:16px;
+}
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:24px;
+  box-shadow:0 10px 24px rgba(0,0,0,.08);
+}
+h1{
+  margin:0 0 16px;
+  font-size:22px;
+}
+.question{
+  font-size:40px;
+  text-align:center;
+  margin:24px 0;
+}
+.answer{
+  display:block;
+  width:100%;
+  font-size:24px;
+  padding:12px;
+  text-align:center;
+}
+button{
+  margin-top:16px;
+  width:100%;
+  padding:14px;
+  font-size:18px;
+  border:none;
+  border-radius:12px;
+  background:#4f46e5;
+  color:#fff;
+  cursor:pointer;
+}
+button:disabled{
+  background:#a5b4fc;
+}
+.message{
+  margin-top:16px;
+  text-align:center;
+  font-size:18px;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>かけ算れんしゅう</h1>
+
+    <div class="question" id="question">もんだいをつくってね</div>
+
+    <input
+      type="number"
+      id="answer"
+      class="answer"
+      placeholder="こたえを入力"
+      disabled
+    />
+
+    <button id="makeBtn">もんだいをつくる</button>
+
+    <div class="message" id="message"></div>
+  </div>
+</div>
+
+<script>
+// ===============================
+// 出題したい問題（固定）
+// ===============================
+const baseQuestions = [
+  [3, 9],
+  [4, 6],
+  [4, 7],
+  [4, 8],
+  [4, 9],
+  [7, 4],
+  [7, 8],
+  [8, 4],
+  [9, 3],
+  [9, 4]
+];
+
+// ===============================
+// 変数
+// ===============================
+let questions = [];
+let currentIndex = 0;
+let correctAnswer = 0;
+
+// ===============================
+// シャッフル（高速）
+// ===============================
+function shuffle(array){
+  for(let i = array.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+// ===============================
+// 問題を作る
+// ===============================
+function makeQuestions(){
+  questions = baseQuestions.slice(); // コピー
+  shuffle(questions);                // ランダム化
+  currentIndex = 0;
+
+  document.getElementById("message").textContent = "";
+  document.getElementById("answer").disabled = false;
+  document.getElementById("answer").value = "";
+  document.getElementById("answer").focus();
+
+  nextQuestion();
+}
+
+// ===============================
+// 次の問題
+// ===============================
+function nextQuestion(){
+  if(currentIndex >= questions.length){
+    document.getElementById("question").textContent = "ぜんぶおわり！";
+    document.getElementById("message").textContent = "よくがんばりました 🎉";
+    document.getElementById("answer").disabled = true;
+    return;
+  }
+
+  const [a, b] = questions[currentIndex];
+  correctAnswer = a * b;
+
+  document.getElementById("question").textContent = `${a} × ${b}`;
+  document.getElementById("answer").value = "";
+  document.getElementById("answer").focus();
+
+  currentIndex++;
+}
+
+// ===============================
+// 正誤判定
+// ===============================
+document.getElementById("answer").addEventListener("keydown", e => {
+  if(e.key !== "Enter") return;
+
+  if(Number(e.target.value) === correctAnswer){
+    nextQuestion();
+  }
+});
+
+// ===============================
+// ボタン
+// ===============================
+document.getElementById("makeBtn").addEventListener("click", makeQuestions);
+</script>
+</body>
+</html>
