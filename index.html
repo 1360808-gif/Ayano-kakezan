@@ -6,7 +6,6 @@
 <title>かけ算（3年生）</title>
 
 <style>
-/* ===== CSS：質問文のものを一切変更していません ===== */
 :root{
   --bg:#f7f8ff;
   --ink:#1f2937;
@@ -15,6 +14,7 @@
   --shadow:0 10px 24px rgba(0,0,0,.08);
 }
 *{ box-sizing:border-box; }
+
 body{
   margin:0;
   font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;
@@ -22,32 +22,150 @@ body{
   color:var(--ink);
 }
 .wrap{ max-width:1200px; margin:16px auto; padding:0 12px 40px; }
+
+/* レイアウト */
 .layout{
   display:grid;
   grid-template-columns: minmax(560px, 760px) 1fr;
   gap:12px;
 }
-@media(max-width:980px){ .layout{ grid-template-columns:1fr; } }
-.top{ background:#fff; border:1px solid var(--line); border-radius:24px; padding:14px; box-shadow:var(--shadow); }
-.titleRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
-.titleRow h1{ margin:0; font-size:22px; }
-.bestBox{ display:inline-flex; gap:8px; padding:8px 12px; border-radius:14px; border:1px dashed rgba(79,70,229,.55); background:#fbfbff; font-weight:1000; }
-.bestClearBtn{ padding:6px 8px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer; }
-.controlsRow{ margin-top:10px; display:flex; justify-content:space-between; gap:10px; }
-button{ padding:9px 12px; border-radius:12px; border:1px solid var(--line); background:#fff; font-weight:900; cursor:pointer; }
-button.primary{ background:var(--accent); color:#fff; border:none; }
-.panel{ background:#fff; border:1px solid var(--line); border-radius:18px; padding:14px; box-shadow:0 6px 12px rgba(0,0,0,.06); }
-.grid{ margin-top:12px; display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-@media(max-width:700px){ .grid{ grid-template-columns:1fr; } }
-.q{ border:1px solid var(--line); border-radius:18px; padding:12px; }
-.qInline{ display:flex; align-items:center; gap:8px; }
-.expr{ font-size:18px; font-weight:1000; }
-.answerBox input{ width:64px; padding:6px; font-size:17px; text-align:center; border-radius:10px; border:2px solid var(--line); }
-.answerBox.ok input{ border-color:#16a34a; }
-.score{ margin-top:14px; font-size:18px; font-weight:1000; }
-/* 手書き */
-.canvasWrap{ border:2px dashed #cbd5e1; border-radius:16px; }
-#board{ width:100%; height:640px; background:#fff; }
+@media(max-width:980px){
+  .layout{ grid-template-columns:1fr; }
+}
+
+/* 左上 */
+.top{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:14px;
+  box-shadow:var(--shadow);
+}
+.titleRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.titleRow h1{
+  margin:0;
+  font-size:22px;
+}
+
+/* 左下 */
+.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  box-shadow:0 6px 12px rgba(0,0,0,.06);
+}
+.grid{
+  margin-top:12px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+@media(max-width:700px){
+  .grid{ grid-template-columns:1fr; }
+}
+.q{
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:12px;
+}
+.qInline{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.expr{
+  font-size:18px;
+  font-weight:1000;
+}
+.answerBox input{
+  width:64px;
+  padding:6px;
+  font-size:17px;
+  text-align:center;
+  border-radius:10px;
+  border:2px solid var(--line);
+}
+.answerBox.ok input{
+  border-color:#16a34a;
+}
+.score{
+  margin-top:14px;
+  font-weight:1000;
+  font-size:18px;
+}
+
+button{
+  padding:9px 12px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+button.primary{
+  background:var(--accent);
+  border-color:transparent;
+  color:#fff;
+}
+
+/* ===== 手書き ===== */
+.boardHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+.boardTitle{
+  font-weight:1000;
+  font-size:16px;
+}
+.boardTools{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.toolBtn{
+  padding:8px 10px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+.toolBtn.active{
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79,70,229,.15);
+}
+
+.canvasWrap{
+  border:2px dashed #cbd5e1;
+  border-radius:16px;
+  background:#fff;
+  overflow:hidden;
+}
+#board{
+  width:100%;
+  height:640px;
+  display:block;
+  touch-action:none;
+  background:
+    linear-gradient(#f9fafb 1px, transparent 1px),
+    linear-gradient(90deg, #f9fafb 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.boardHint{
+  margin-top:10px;
+  color:#6b7280;
+  font-weight:800;
+  font-size:13px;
+}
 </style>
 </head>
 
@@ -55,28 +173,21 @@ button.primary{ background:var(--accent); color:#fff; border:none; }
 <div class="wrap">
   <div class="layout">
 
-    <!-- ===== 左カラム ===== -->
+    <!-- 左カラム -->
     <div class="leftCol">
 
-      <!-- 左上 -->
+      <!-- 左上：タイトル -->
       <div class="top">
         <div class="titleRow">
           <h1>かけ算（3年生）</h1>
-          <div class="bestBox">
-            <button class="bestClearBtn">🗑</button>
-            <span>🏆 ベスト</span>
-            <span id="bestText">—</span>
-            <span>びょう</span>
-          </div>
         </div>
-
-        <div class="controlsRow">
+        <div style="margin-top:10px;">
           <button class="primary" id="checkBtn">こたえあわせ</button>
           <button id="makeBtn">もんだいをつくる</button>
         </div>
       </div>
 
-      <!-- 左下 -->
+      <!-- 左下：問題 -->
       <div class="panel" style="margin-top:12px;">
         <div class="grid" id="qs"></div>
         <div class="score" id="score">点数：— / 100</div>
@@ -84,10 +195,23 @@ button.primary{ background:var(--accent); color:#fff; border:none; }
 
     </div>
 
-    <!-- ===== 右カラム：手書き ===== -->
+    <!-- 右カラム：手書き -->
     <div class="panel">
+      <div class="boardHeader">
+        <div class="boardTitle">✍ 手書き計算スペース</div>
+        <div class="boardTools">
+          <button class="toolBtn active" id="penBtn">ペン</button>
+          <button class="toolBtn" id="eraserBtn">消しゴム</button>
+          <button class="toolBtn" id="clearBtn">ぜんぶけす</button>
+        </div>
+      </div>
+
       <div class="canvasWrap">
         <canvas id="board"></canvas>
+      </div>
+
+      <div class="boardHint">
+        ※ 指で書けます。ペンと消しゴムを切り替えられます。
       </div>
     </div>
 
@@ -95,7 +219,7 @@ button.primary{ background:var(--accent); color:#fff; border:none; }
 </div>
 
 <script>
-/* ===== かけ算ロジックのみ ===== */
+/* ===== かけ算問題 ===== */
 function rand(min,max){
   return Math.floor(Math.random()*(max-min+1))+min;
 }
@@ -146,11 +270,84 @@ function check(){
   document.getElementById("score").textContent=`点数：${score} / 100`;
 }
 
+/* ===== 手書き ===== */
+const canvas = document.getElementById("board");
+const ctx = canvas.getContext("2d");
+let drawing=false, lastX=0, lastY=0, mode="pen";
+
+function resizeCanvas(){
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  setPenStyle();
+}
+function setPenStyle(){
+  ctx.lineCap="round";
+  ctx.lineJoin="round";
+  if(mode==="pen"){
+    ctx.globalCompositeOperation="source-over";
+    ctx.lineWidth=4;
+    ctx.strokeStyle="#111827";
+  }else{
+    ctx.globalCompositeOperation="destination-out";
+    ctx.lineWidth=16;
+  }
+}
+function getPos(e){
+  const r=canvas.getBoundingClientRect();
+  const t=e.touches?e.touches[0]:null;
+  const x=t?t.clientX:e.clientX;
+  const y=t?t.clientY:e.clientY;
+  return {x:x-r.left,y:y-r.top};
+}
+function startDraw(e){
+  drawing=true;
+  const p=getPos(e);
+  lastX=p.x; lastY=p.y;
+}
+function moveDraw(e){
+  if(!drawing) return;
+  e.preventDefault();
+  const p=getPos(e);
+  ctx.beginPath();
+  ctx.moveTo(lastX,lastY);
+  ctx.lineTo(p.x,p.y);
+  ctx.stroke();
+  lastX=p.x; lastY=p.y;
+}
+function endDraw(){ drawing=false; }
+
+canvas.addEventListener("mousedown", startDraw);
+canvas.addEventListener("mousemove", moveDraw);
+window.addEventListener("mouseup", endDraw);
+
+canvas.addEventListener("touchstart", startDraw, {passive:false});
+canvas.addEventListener("touchmove", moveDraw, {passive:false});
+canvas.addEventListener("touchend", endDraw);
+
+document.getElementById("penBtn").onclick=()=>{
+  mode="pen";
+  setPenStyle();
+};
+document.getElementById("eraserBtn").onclick=()=>{
+  mode="eraser";
+  setPenStyle();
+};
+document.getElementById("clearBtn").onclick=()=>{
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+};
+
+/* 初期化 */
 document.getElementById("makeBtn").onclick=()=>{
   problems=makeProblems();
   render();
 };
 document.getElementById("checkBtn").onclick=check;
+
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
 problems=makeProblems();
 render();
